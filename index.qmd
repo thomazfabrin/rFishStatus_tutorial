@@ -1,0 +1,40 @@
+---
+title: "Welcome to rFishStatus"
+subtitle: "An R package for assisting in the correction of nomenclature conflicts in fish occurrence data"
+---
+
+## Overview
+
+This document serves as a tutorial for the R package [`rFishStatus`](https://github.com/thomazfabrin/rFishStatus) and outlines its design and development following the Design Science Research Methodology (DSRM).
+
+`rFishStatus` aims to address the challenge of nomenclature inconsistencies
+in fish occurrence databases. The package was initially developed for the Paraná State region in Brazil,
+with the flexibility to be adapted for other geographical areas given appropriate input data.
+
+## Installation
+
+To install `rFishStatus` (example):
+
+```r
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+remotes::install_github("thomazfabrin/rFishStatus")
+```
+
+## How to Cite
+
+If you use `rFishStatus` in your work, please cite it as follows:
+
+> Fabrin, T.M.C., et al. (2024). **rFishStatus: An R package for assisting in the correction of nomenclature conflicts in fish occurrence data.** GitHub repository: [https://github.com/thomazfabrin/rFishStatus](https://github.com/thomazfabrin/rFishStatus)
+
+## Document Structure (DSRM)
+
+This tutorial/report follows the Design Science Research Methodology (DSRM) stages:
+
+* Problem Identification and Motivation
+* Definition of the Objectives for a Solution
+* Design and Development of the Artifact (`rFishStatus`)
+* Demonstration (Usage Tutorial)
+* Evaluation
+* Communication and Conclusion

@@ -1,0 +1,177 @@
+## When and How Should I Use `rFishStatus`?
+
+`rFishStatus` is a package designed to help you assess the status and nomenclature of fish species in input lists or occurrence datasets (*currently only GBIF is supported*). This tutorial will guide you through the process of using the package effectively.
+
+### Preparing the data
+To use the package, you need to prepare your data in a specific format following the `rFishStatus` template. To see an example of it you can run the following code:
+```{r}
+#| warning: false
+#| message: false
+library(rFishStatus)
+library(dplyr)
+
+# Let's check the template reference
+glimpse(data_template_ref)
+
+```
+
+All functions in `rFishStatus`will use this template as a reference. For more details please refer to the [data template documentation](https://thomazfabrin.github.io/rFishStatus/reference/data_template_ref.html).
+
+This reference dataset will then be used to construct a reference list of fish species, which will be used to assess the status and nomenclature of the species in your input list. This is basically the **List Curation Workflow** shown in [Design & Development](03_design_development.qmd) section.
+
+### List Curation Workflow
+
+The first step in using `rFishStatus` is to create a reference species list from the data template. This list will be used to assess the status and nomenclature of the species in your input list.
+You can create the reference species list by running the following code:
+
+```{r}
+#| warning: false
+#| message: false
+
+library(rFishStatus)
+
+reference_spp_list <- rfs_get_species_list(
+    # Here we use the data template reference
+    # But you can use your own dataset
+    df = data_template_ref
+)
+
+```
+
+```{r}	
+#| warning: false
+#| message: false
+#| echo: false
+
+set.seed(123)
+
+knitr::kable(
+    dplyr::slice_sample(reference_spp_list, n = 5) |>
+    dplyr::arrange(scientific_name),
+    caption = "Sample of reference species list from the rFishStatus template"
+)
+```
+
+Once you obtain the reference list, you can load your input dataset to be assessed. This dataset should be a dataframe, with a column named *species*. For further details on the input dataset format, please refer to the [rfs_update_list()](https://thomazfabrin.github.io/rFishStatus/reference/rfs_update_list.html).
+
+#### Checking your input list
+
+Let's create a sample input list and compare it with the reference species list using [rfs_update_list()](https://thomazfabrin.github.io/rFishStatus/reference/rfs_update_list.html).
+
+```{r}
+#| warning: false
+#| message: false
+# Create a sample input list
+input_list <- data.frame(
+    species = c(
+        "Crenicichla britskii",
+        "Cicha kelberi",
+        "Geophagus brasiliensis"
+    )
+)
+
+# Check the input list against the reference species list
+result <- rfs_update_list(
+    input_list = input_list,
+    reference_list = reference_spp_list
+)
+
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+
+knitr::kable(
+    result,
+    caption = "Sample of the result of rfs_update_list()"
+)
+
+```
+
+A typo was added to the input list (*Cicha kelberi*) to demonstrate how `rfs_update_list()` can identify it.
+
+### Occurrence Data Workflow
+
+The second workflow is the **Occurrence Data Workflow**, which is used to assess the status and nomenclature of fish species in occurrence datasets (*so far this is specificaly tailored to work with GBIF data*, so you will need GBIF credentials that can be obtained [here](https://www.gbif.org/)). This workflow runs the previous workflow internally, but it also includes additional steps to obtain occurrence data automatically from GBIF.
+First you need to download the occurrence data from GBIF using `rfs_download_occ_data()`. This function will download the occurrence data automatically by interacting with the `rgbif` package. Let's download all *Crenicichla* occurrence for the state of Paraná, Brazil, and save it in `data/occ_data`:
+
+```{r}	
+#| warning: false
+#| message: false
+#| eval: false
+# Download occurrence data from GBIF
+# Obs. You don't need to assign the result to a variable, since it will execute and 
+# save the data in the folder passed as an argument
+
+dotenv::load_dot_env()
+
+rfs_download_occ_data(
+    gbif_user = Sys.getenv("GBIF_USER"),
+    gbif_pwd = Sys.getenv("GBIF_PWD"),
+    gbif_email = Sys.getenv("GBIF_EMAIL"),
+    folder_name = "data/occ_data",
+    country = "Brazil",
+    state = "Paraná",
+    reverse_polygon = TRUE,
+    taxonkey = 2370916, # Taxonkey for Crenicichla
+)
+
+```
+
+After downloading the data let's check it in the folder `data/occ_data`:
+```{r}
+#| warning: false
+#| message: false
+# Check the downloaded data
+occ_data <- list.files("data/occ_data", full.names = TRUE) |>
+    readr::read_delim()
+
+dplyr::glimpse(occ_data)
+```
+
+Now that we have the occurrence data, we can use `rfs_update_occ_data()` to assess the status and nomenclature of the species in the occurrence dataset. This function will run the previous workflow internally, but it will also include additional steps to obtain occurrence data automatically from GBIF.
+
+```{r}
+#| warning: false
+#| message: false
+# Check the occurrence data against the reference species list
+updated_occ_data <- rfs_update_occ_data(
+    species_database = data_template_ref, 
+    occurrence_df = occ_data
+)
+```
+
+Let's check the result of the `rfs_update_occ_data()` function:
+```{r}
+#| warning: false
+#| message: false
+
+# Select only species column from GBIF and the ones that validated their status
+summary_result <- updated_occ_data |>
+    select(
+        species_gbif,
+        status_ref,
+        valid_as_ref
+    ) |>
+    rename(
+        species = species_gbif,
+        status_gbif = status_ref,
+        valid_species = valid_as_ref
+    ) |>
+    distinct() |>
+    arrange(species)
+
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| eval: true
+knitr::kable(
+    summary_result,
+    caption = "Sample of the result of rfs_update_occ_data()"
+)
+```

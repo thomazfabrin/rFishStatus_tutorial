@@ -1,0 +1,51 @@
+---
+bibliography: references.bib
+# suppress-bibliography: true
+---
+
+## Conceptual architecture
+
+The `rFishStatus` package was developed using the R language, which is predominantly utilized in academia and offers a vast array of packages that can help the development of new solutions. It is important to highlight that rFishStatus is specifically tailored for fish species. Although other packages attempt to address species nomenclature and provide status verification, they often lack precision regarding the currency of their reference datasets, making more accurate solutions both appreciated and necessary [@grenie_harmonizing_2023; @hughes_big_2023].
+
+`rFishStatus` offers a straightforward and simple workflow, **allowing users to organize reference datasets and instantaneously create organized and updated species lists**. Additionally, it provides suggested solutions for cases where nomenclature and status are not fully resolved. One of the primary advantages of `rFishStatus` is its simplicity, complemented by an optional Streamlit application (*under developement*), which will be freely provided to help interpret its results.
+
+Two primary workflows are suggested for using the rFishStatus package:
+
+**1. List Curation Workflow**: In the simplest workflow, the user provides the reference data and an input list of species names. This list is then verified against the reference dataset organized by `rFishStatus`. The package returns a curated list with updated taxonomic statuses and suggests potential resolutions for unresolved nomenclature or status issues.
+
+```{mermaid}
+%%| echo: false
+%%| fig-cap: "List curation simple workflow."
+graph LR;
+    classDef gray fill:#ddd,stroke:#555,stroke-width:1px,color:black;
+    classDef blue fill:#C5E1F8FF,stroke:#555,stroke-width:1px,color:black;
+    A[Reference Data] --> B;
+    B(<b>rFishStatus::</b>rfs_get_species_list) --> C[<i> Species list </i>];
+    D[Input Species List] --> E(<b>rFishStatus::</b>rfs_update_list);
+    C --> E;
+    E --> F[<i> Curated List with Updated <br/> Taxonomic Nomenclature </i>];
+    class A,C,D,F gray;
+    class B,E blue;
+```
+
+**2. Occurrence Data Workflow**: This workflow involves more steps and focuses on working with occurrence datasets. Similar to the first workflow, the user starts with a reference dataset. However, they now also provide geographic information and their GBIF login credentials to automatically download species occurrences relevant to their region of interest. The package then returns the occurrence dataset, with species nomenclature and status updated according to the user provided reference data.
+
+```{mermaid}
+%%| echo: false
+%%| fig-cap: "Occurrence data simple workflow."
+graph LR;
+    classDef gray fill:#ddd,stroke:#555,stroke-width:1px,color:black;
+    classDef blue fill:#C5E1F8FF,stroke:#555,stroke-width:1px,color:black;
+    A[GBIF Credentials] --> C;
+    B[User polygon] --> C;
+    C(<b>rFishStatus::</b>rfs_download_occ_data) --> D[Occurrence data];
+    D --> E(<b>rFishStatus::</b>rfs_update_occ_data</u>);
+    F[Reference Data] --> E;
+    E --> G[<i> Updated occurrence data]
+    class A,B,D,F,G gray;
+    class C,E blue;
+```
+
+Within the second workflow, the resulting dataset can be further enriched by incorporating basin information and the invasiveness status of species. To utilize this feature, the user must provide shapefiles for the desired basins and a corresponding list of invasive species. The package includes built-in basin data and an invasive species list specifically for Paraná State, Brazil, reflecting the project's initial focus on monitoring freshwater environments in this region. Furthermore, `rFishStatus` offers additional functionalities for data visualization and comparison with FishBase.
+
+In its current version, `rFishStatus` comprises 10 core functions. These functions cover a range of tasks, from assisting in building a reference species list to processing the downloaded results.

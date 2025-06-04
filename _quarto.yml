@@ -1,0 +1,72 @@
+project:
+  type: website # Or book, for a more publication-like structure
+  output-dir: docs # Standard for GitHub Pages
+
+website: # If type: website
+  title: "rFishStatus"
+  description: "A comprehensive guide to the rFishStatus package, including design, development, and evaluation."
+  # navbar:
+  #   left:
+  #     - href: index.qmd
+  #       text: Home
+  #     - href: 01_problem_motivation.qmd
+  #       text: Problem & Motivation
+  #     - href: 02_objectives.qmd
+  #       text: Objectives
+  #     - href: 03_design_development.qmd
+  #       text: Design & Development (rFishStatus)
+  #     - href: 04_demonstration_tutorial.qmd
+  #       text: Demonstration & Tutorial
+  #     - href: 05_evaluation.qmd
+  #       text: Evaluation
+  #     - href: 06_communication_conclusion.qmd
+  #       text: Conclusion & Communication
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - section: "rFishStatus & DSRM"
+        contents:
+          - href: 01_problem_motivation.qmd
+            text: Problem & Motivation
+          - href: 02_objectives.qmd
+            text: Objectives
+          - href: 03_design_development.qmd
+            text: Design & Development
+          - href: 04_demonstration_tutorial.qmd
+            text: Demonstration & Tutorial
+          - href: 05_evaluation.qmd
+            text: Evaluation
+          - href: 06_communication_conclusion.qmd
+            text: Communication & Conclusion
+          - href: 07_references.qmd
+            text: References
+
+format:
+  html:
+    css: styles.css
+    theme: cosmo # A clean theme for HTML
+    toc: true
+    code-fold: true # Useful for tutorials, hides code by default
+    # embed-resources: true # For a self-contained HTML, if needed
+  # pdf: # Example for future publication
+  #   documentclass: article
+  #   bibliography: references.bib
+  #   # csl: apa.csl # Example citation style
+  #   # Other LaTeX options can be added here
+  # docx: # Example for future publication
+  #   reference-doc: custom-reference.docx # If you need a Word template
+  #   bibliography: references.bib
+  #   # csl: apa.csl
+
+# Execution options for code chunks
+execute:
+  echo: true # Show code by default (good for tutorial)
+  eval: true # Evaluate code by default
+  cache: true # Enable cache for time-consuming chunks
+
+bibliography: references.bib # Global bibliography file
+
+# Add other metadata like author, date, etc.
+# author: "Your Name"
+# date: "today"

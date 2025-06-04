@@ -1,0 +1,14 @@
+## Definition of the Objectives
+
+The development of the rFishStatus R package is driven by the need to address critical challenges in managing and utilizing fish occurrence data. The primary objectives of this artifact are:
+
+1. To improve data curation and accuracy:
+    * Provide tools to process reference data.
+    * Facilitate the updating of species status and nomenclature in existing occurrence datasets.
+2. To streamline taxonomic harmonization:
+    * Offer functions to address the taxonomic harmonization by matching species names from input lists or occurrence datasets against a reference database and verifying their current status.
+    * Combine existing tools and knowledge into a unified solution that facilitates a streamlined workflow for harmonizing taxonomic information.
+3. To support data validation and error reduction by end-users:
+    * Develop functionalities that flag incorrect or outdated species status, and also propose possible corrections.
+    * Enable users to interpret and compare species input data effectively.
+    * Provide tools that can be customized by end-users to align with their specific requirements.
