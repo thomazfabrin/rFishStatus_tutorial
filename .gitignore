@@ -1,3 +1,5 @@
 /.quarto/
 .env
 R/
+04_demonstration_tutorial_cache/
+index_cache/
